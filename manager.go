@@ -646,11 +646,13 @@ var minimumTickerInterval = 50 * time.Millisecond
 func (mgr *traceManager) runWriterThread(
 	syncCh <-chan *synchronizeRegistryRequest,
 	receiveCh <-chan []byte, limitInterval time.Duration,
+	logger *zap.SugaredLogger,
 ) error {
 	// Writer state for handling the dispatch relation
 	// of the trace data payload.
 	state := &traceWriterState{
 		registries: make(map[uint64]*traceHandle),
+		logger:     logger,
 	}
 
 	// Initialize the ticker which limits the reader
@@ -910,7 +912,7 @@ func newInternal(
 	})
 	group.Go(func() error {
 		return manager.runWriterThread(
-			syncCh, receiveCh, option.limitInterval)
+			syncCh, receiveCh, option.limitInterval, logger)
 	})
 	hasCreated = true
 	return manager, nil
