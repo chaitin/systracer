@@ -13,6 +13,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/chaitin/systracer"
+	"github.com/chaitin/systracer/inode"
 )
 
 type moduleBarrier struct{}
@@ -78,6 +79,7 @@ var rootCmd = &cobra.Command{
 			defer logger.Sync()
 			return next(logger, sugaredLogger)
 		}),
+		inode.Module,
 	)).RunE,
 }
 
